@@ -49,11 +49,19 @@ int main()
 
 	while (app.isOpen())
 	{
+		Vector2i pos = Mouse::getPosition(app);
+		int x = pos.x / SPRITE_SIZE;
+		int y = pos.y / SPRITE_SIZE;
+
 		Event event;
 		while (app.pollEvent(event))
 		{
 			if (event.type == Event::Closed)
 				app.close();
+
+			if (event.type == Event::MouseButtonPressed)
+				if (event.key.code == Mouse::Left) sgrid[x][y] = grid[x][y];
+				else if (event.key.code == Mouse::Right) sgrid[x][y] = 11;
 
 		}
 		app.clear(Color::White);
@@ -63,7 +71,9 @@ int main()
 
 				for (int j = 1; j <= 10; j++) {
 
-					sgrid[i][j] = grid[i][j];
+					if (x >= 1 && x <= 10 && y >= 1 && y <= 10) {
+						if (sgrid[x][y] == 9) sgrid[i][j] = grid[i][j];
+					}
 
 
 
