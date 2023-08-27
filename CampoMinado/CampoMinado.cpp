@@ -1,20 +1,50 @@
-// CampoMinado.cpp : Este arquivo contém a função 'main'. A execução do programa começa e termina ali.
-//
+#include <SFML/Graphics.hpp>
+#include <time.h>
 
-#include <iostream>
+using namespace sf;
+
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	srand(time(0));
+	
+
+	RenderWindow app(VideoMode(400, 400), "Campo Minado");
+
+	constexpr auto SPRITE_SIZE = 32;
+	int grid[12][12];
+	int sgrid[12][12];
+
+	Texture texture;
+	texture.loadFromFile("images/tiles.jpg");
+	Sprite sprite(texture);
+
+	for (int i = 1; i <= 10; i++)
+		for (int j = 1; j <= 10; j++) {
+			sgrid[i][j] = 10;
+		}
+
+	while (app.isOpen())
+	{
+		Event eve;
+		while (app.pollEvent(eve))
+		{
+			if (eve.type == Event::Closed)
+				app.close();
+
+		}
+		app.clear(Color::White);
+
+		for (int i = 1; i <= 10; i++)
+			for (int j = 1; j <= 10; j++) {
+				sprite.setTextureRect(IntRect(sgrid[i][j] * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE));
+				sprite.setPosition(i * SPRITE_SIZE, j * SPRITE_SIZE);
+				app.draw(sprite);
+			}
+	
+
+		app.display();
+	}
+
 }
 
-// Executar programa: Ctrl + F5 ou Menu Depurar > Iniciar Sem Depuração
-// Depurar programa: F5 ou menu Depurar > Iniciar Depuração
-
-// Dicas para Começar: 
-//   1. Use a janela do Gerenciador de Soluções para adicionar/gerenciar arquivos
-//   2. Use a janela do Team Explorer para conectar-se ao controle do código-fonte
-//   3. Use a janela de Saída para ver mensagens de saída do build e outras mensagens
-//   4. Use a janela Lista de Erros para exibir erros
-//   5. Ir Para o Projeto > Adicionar Novo Item para criar novos arquivos de código, ou Projeto > Adicionar Item Existente para adicionar arquivos de código existentes ao projeto
-//   6. No futuro, para abrir este projeto novamente, vá para Arquivo > Abrir > Projeto e selecione o arquivo. sln
