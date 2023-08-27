@@ -45,7 +45,7 @@ int main()
 			grid[i][j] = n;
 		}
 
-
+	
 
 	while (app.isOpen())
 	{
@@ -54,27 +54,57 @@ int main()
 		int y = pos.y / SPRITE_SIZE;
 
 		Event event;
+		bool eventMouseLeft = false;
+		bool changegrid = false;
 		while (app.pollEvent(event))
 		{
 			if (event.type == Event::Closed)
 				app.close();
 
-			if (event.type == Event::MouseButtonPressed)
-				if (event.key.code == Mouse::Left) sgrid[x][y] = grid[x][y];
-				else if (event.key.code == Mouse::Right) sgrid[x][y] = 11;
+			if (event.type == Event::MouseButtonPressed){
+				if (x >= 1 && x <= 10 && y >= 1 && y <= 10) {
+					if (event.key.code == Mouse::Left) {
+						eventMouseLeft = true;
+						if (sgrid[x][y] != grid[x][y]) {
+							changegrid = true;
+							sgrid[x][y] = grid[x][y];
+						}
+					}
+					else if (event.key.code == Mouse::Right) {
+						if (sgrid[x][y] == 10) sgrid[x][y] = 11;
+						else if (sgrid[x][y] == 11) sgrid[x][y] = 10;
+					}
+				}
+			}
+				
+
 
 		}
 		app.clear(Color::White);
-
 		for (int i = 1; i <= 10; i++)
 			for (int j = 1; j <= 10; j++) {
 
 				for (int j = 1; j <= 10; j++) {
+					
+					if (eventMouseLeft) {
+						if (x >= 1 && x <= 10 && y >= 1 && y <= 10) {
+							if (sgrid[x][y] == 9) sgrid[i][j] = grid[i][j];
+							if (sgrid[x][y] == 0 && changegrid == true) {
+		
+								if (grid[x + 1][y] != 9) sgrid[x + 1][y] = grid[x + 1][y]; //Quando for colocar poderes , talvez sejam necessárias mudanças
+								if (grid[x - 1][y] != 9) sgrid[x - 1][y] = grid[x - 1][y];
+								if (grid[x][y + 1] != 9) sgrid[x][y + 1] = grid[x][y + 1];
+								if (grid[x][y - 1] != 9) sgrid[x][y - 1] = grid[x][y - 1];
 
-					if (x >= 1 && x <= 10 && y >= 1 && y <= 10) {
-						if (sgrid[x][y] == 9) sgrid[i][j] = grid[i][j];
+								if (grid[x + 1][y + 1] != 9) sgrid[x + 1][y + 1] = grid[x + 1][y + 1];
+								if (grid[x + 1][y - 1] != 9) sgrid[x + 1][y - 1] = grid[x + 1][y - 1];
+								if (grid[x - 1][y + 1] != 9) sgrid[x - 1][y + 1] = grid[x - 1][y + 1];
+								if (grid[x - 1][y - 1] != 9) sgrid[x - 1][y - 1] = grid[x - 1][y - 1];
+								
+								
+							}
+						}
 					}
-
 
 
 					sprite.setTextureRect(IntRect(sgrid[i][j] * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE));
