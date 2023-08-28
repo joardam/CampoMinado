@@ -134,6 +134,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CampoMinado.cpp" />
+    <ClCompile Include="mnswfunctions.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mnswfunctions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
