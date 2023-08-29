@@ -59,12 +59,12 @@ void eventButtonpressed(Matrixt2d& sMatrix, Matrixt2d& matrix, Event event, bool
 	int cols = matrix[0].size();
 
 	if (event.type == Event::MouseButtonPressed) {
-		if (x >= 1 && x <= (cols - 2) && y >= 1 && y <= (rows - 2)) {
+		if (availableSpace(x,y,rows,cols)) {
 			if (event.key.code == Mouse::Left) {
-				eventMouseLeft = true;
-				if (sMatrix[x][y] != matrix[x][y]) {
-					changeGrid = true;
-					sMatrix[x][y] = matrix[x][y];
+				if (matrix[x][y] == 9) gameOver(sMatrix, matrix, rows, cols);
+				else if (sMatrix[x][y] != matrix[x][y]) {
+					std::vector<std::vector<int>> reveal(rows, std::vector<int>(cols));
+					analyzeEmptySpaces(reveal, sMatrix, matrix, x, y, rows, cols);
 				}
 			}
 			else if (event.key.code == Mouse::Right) {
@@ -84,51 +84,46 @@ bool availableSpace(int x , int y, int rows , int cols) {
 }
 
 
-void analyzeEmptySpaces(Matrixt2d& sMatrix, Matrixt2d& matrix, int x, int y, int rows, int  cols) {
-	for (int k = -1; k <= 1; k++) {
-		for (int l = -1; l <= 1; l++) {
-			if (matrix[x + k][y + l] != 9) sMatrix[x + k][y + l] = matrix[x + k][y + l];
-		}
+void analyzeEmptySpaces(Matrixt2d& reveal, Matrixt2d& sMatrix, Matrixt2d& matrix, int x, int y, int rows, int  cols) {
+	if (!(availableSpace(x, y, rows, cols)) || (reveal[x][y] == 1) || matrix[x][y] == 9) {
+		return;
+	}
+
+	if (matrix[x][y] > 0 && matrix[x][y] < 9) {
+		sMatrix[x][y] = matrix[x][y];
+		return;
+	}
+	
+	reveal[x][y] = 1;
+
+	if (matrix[x][y] != 9) {
+		sMatrix[x][y] = matrix[x][y];
+		analyzeEmptySpaces(reveal, sMatrix, matrix, x - 1, y, rows, cols);
+		analyzeEmptySpaces(reveal, sMatrix, matrix, x + 1, y, rows, cols);
+		analyzeEmptySpaces(reveal, sMatrix, matrix, x, y - 1, rows, cols);
+		analyzeEmptySpaces(reveal, sMatrix, matrix, x, y + 1, rows, cols);
 	}
 }
 
 
-void fieldDraw(Matrixt2d& sMatrix, Matrixt2d matrix, bool eventMouseLeft, bool changeGrid, int x, int y, Sprite sprite, RenderWindow& app, int spriteSize) {
-	int rows = matrix.size();
-	int cols = matrix[0].size();
-
-	if (eventMouseLeft) {
-		if (x >= 1u && x <= (cols - 2) && y >= 1u && y <= (rows - 2)) {
-			if (sMatrix[x][y] == 9) {
-				for (int row = 1; (row <= rows - 2); row++) {
-					for (int col = 1; col <= (cols - 2); col++) {
-						sMatrix[row][col] = matrix[row][col];
-					}
-				}
-			}
-
-
-			if (sMatrix[x][y] == 0 && changeGrid == true) {
-				analyzeEmptySpaces(sMatrix, matrix, x, y, rows, cols);
-			}
-		}
-	}
-
+void gameOver(Matrixt2d& sMatrix, Matrixt2d& matrix, int rows, int cols) {
 	for (int row = 1; (row <= rows - 2); row++) {
 		for (int col = 1; col <= (cols - 2); col++) {
-			spriteDraw(sprite, app, spriteSize, sMatrix, row, col);
+			sMatrix[row][col] = matrix[row][col];
+		}
+	}
+}
+
+void fieldDraw(Matrixt2d& sMatrix, Matrixt2d matrix, Sprite sprite, RenderWindow& app, int spriteSize) {
+	int rows = matrix.size();
+	int cols = matrix[0].size();
+	
+	for (int row = 1; (row <= rows - 2); row++) {
+		for (int col = 1; col <= (cols - 2); col++) {
+			sprite.setTextureRect(IntRect(sMatrix[row][col] * spriteSize, 0, spriteSize, spriteSize));
+			sprite.setPosition(float(row * spriteSize), float(col * spriteSize));
+			app.draw(sprite);
 		}
 	}
 
-
-}
-
-
-
-
-
-void spriteDraw(Sprite sprite, RenderWindow& app , int spriteSize, Matrixt2d& sMatrix , int row, int col) {
-	sprite.setTextureRect(IntRect(sMatrix[row][col] * spriteSize, 0, spriteSize, spriteSize));
-	sprite.setPosition(float(row * spriteSize), float(col * spriteSize));
-	app.draw(sprite);
 }

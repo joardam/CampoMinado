@@ -12,8 +12,8 @@ int main()
 {
 	srand(static_cast<unsigned int>(time(0)));
 	
-	int rows = 12;
-	int cols = 12;
+	int rows = 18;
+	int cols = 18;
 	int spriteSize = 32;
 
 	unsigned int videoSizex = static_cast<unsigned int>(rows * spriteSize);
@@ -25,7 +25,7 @@ int main()
 	//Cria matrizes
 	std::vector<std::vector<int>> grid(rows, std::vector<int>(cols));
 	std::vector<std::vector<int>> sgrid(rows, std::vector<int>(cols));
-
+	
 
 	Texture texture;
 	texture.loadFromFile("images/tiles.jpg");
@@ -59,7 +59,7 @@ int main()
 		}
 		
 		app.clear(Color::White);
-		fieldDraw(sgrid, grid, eventMouseLeft, changeGrid, x, y, sprite, app , spriteSize);
+		fieldDraw(sgrid, grid, sprite, app , spriteSize);
 
 	
 
