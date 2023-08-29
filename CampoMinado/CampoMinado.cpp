@@ -1,7 +1,7 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <time.h>
-#include "mnswfunctions.h"
+#include "Gamelogic.h"
 
 
 
@@ -12,14 +12,15 @@ int main()
 {
 	srand(static_cast<unsigned int>(time(0)));
 	
-
-	sf::RenderWindow app(VideoMode(400, 400), "Campo Minado");
-
-	int spriteSize = 32;
-	
-	
 	int rows = 12;
 	int cols = 12;
+	int spriteSize = 32;
+
+	unsigned int videoSizex = static_cast<unsigned int>(rows * spriteSize);
+	unsigned int videoSizey = static_cast<unsigned int>(cols * spriteSize);
+
+	sf::RenderWindow app(VideoMode(videoSizex, videoSizey), "Campo Minado" , Style::Close);
+
 
 	//Cria matrizes
 	std::vector<std::vector<int>> grid(rows, std::vector<int>(cols));

@@ -18,12 +18,12 @@
     <ClCompile Include="CampoMinado.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="mnswfunctions.cpp">
+    <ClCompile Include="GameLogic.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mnswfunctions.h">
+    <ClInclude Include="GameLogic.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <time.h>
-#include "mnswfunctions.h"
+#include "GameLogic.h"
 
 
 
@@ -89,8 +89,8 @@ void actionConsequece(Matrixt2d& sMatrix, Matrixt2d matrix, bool eventMouseLeft,
 		};
 
 
-	for (int row = 1; row <= 10; row++) {
-		for (int col = 1; col <= 10; col++) {
+	for (int row = 1; (row <= rows- 2) ; row++) {
+		for (int col = 1; col <= (cols - 2) ; col++) {
 
 			if (eventMouseLeft) {
 				if (x >= 1u && x <= (cols - 2) && y >= 1u && y <= (rows - 2)) {
