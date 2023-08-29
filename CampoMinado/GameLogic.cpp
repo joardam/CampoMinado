@@ -76,36 +76,59 @@ void eventButtonpressed(Matrixt2d& sMatrix, Matrixt2d& matrix, Event event, bool
 }
 
 
-void actionConsequece(Matrixt2d& sMatrix, Matrixt2d matrix, bool eventMouseLeft, bool changeGrid, int x, int y, Sprite sprite, RenderWindow& app , int spriteSize) {
+bool availableSpace(int x , int y, int rows , int cols) {
+	if ((x > 0 && x <= (cols - 2)) && (y > 0 && y <= (rows - 2))) return true;
+	else return false ;
+
+
+}
+
+
+void analyzeEmptySpaces(Matrixt2d& sMatrix, Matrixt2d& matrix, int x, int y, int rows, int  cols) {
+	for (int k = -1; k <= 1; k++) {
+		for (int l = -1; l <= 1; l++) {
+			if (matrix[x + k][y + l] != 9) sMatrix[x + k][y + l] = matrix[x + k][y + l];
+		}
+	}
+}
+
+
+void fieldDraw(Matrixt2d& sMatrix, Matrixt2d matrix, bool eventMouseLeft, bool changeGrid, int x, int y, Sprite sprite, RenderWindow& app, int spriteSize) {
 	int rows = matrix.size();
 	int cols = matrix[0].size();
 
-	auto analyzeEmptySpaces = [](Matrixt2d& sMatrix, Matrixt2d& matrix, int row, int col, int x, int y) {
-		for (int k = -1; k <= 1; k++) {
-			for (int l = -1; l <= 1; l++) {
-				if (matrix[x + k][y + l] != 9) sMatrix[x + k][y + l] = matrix[x + k][y + l];
-			}
-		}
-		};
-
-
-	for (int row = 1; (row <= rows- 2) ; row++) {
-		for (int col = 1; col <= (cols - 2) ; col++) {
-
-			if (eventMouseLeft) {
-				if (x >= 1u && x <= (cols - 2) && y >= 1u && y <= (rows - 2)) {
-					if (sMatrix[x][y] == 9) sMatrix[row][col] = matrix[row][col];
-					if (sMatrix[x][y] == 0 && changeGrid == true) {
-						analyzeEmptySpaces(sMatrix, matrix, row, col, x, y);
-
+	if (eventMouseLeft) {
+		if (x >= 1u && x <= (cols - 2) && y >= 1u && y <= (rows - 2)) {
+			if (sMatrix[x][y] == 9) {
+				for (int row = 1; (row <= rows - 2); row++) {
+					for (int col = 1; col <= (cols - 2); col++) {
+						sMatrix[row][col] = matrix[row][col];
 					}
 				}
 			}
 
 
-			sprite.setTextureRect(IntRect(sMatrix[row][col] * spriteSize, 0, spriteSize, spriteSize));
-			sprite.setPosition(float(row * spriteSize), float(col * spriteSize));
-			app.draw(sprite);
+			if (sMatrix[x][y] == 0 && changeGrid == true) {
+				analyzeEmptySpaces(sMatrix, matrix, x, y, rows, cols);
+			}
 		}
 	}
+
+	for (int row = 1; (row <= rows - 2); row++) {
+		for (int col = 1; col <= (cols - 2); col++) {
+			spriteDraw(sprite, app, spriteSize, sMatrix, row, col);
+		}
+	}
+
+
+}
+
+
+
+
+
+void spriteDraw(Sprite sprite, RenderWindow& app , int spriteSize, Matrixt2d& sMatrix , int row, int col) {
+	sprite.setTextureRect(IntRect(sMatrix[row][col] * spriteSize, 0, spriteSize, spriteSize));
+	sprite.setPosition(float(row * spriteSize), float(col * spriteSize));
+	app.draw(sprite);
 }

@@ -59,7 +59,7 @@ int main()
 		}
 		
 		app.clear(Color::White);
-		actionConsequece(sgrid, grid, eventMouseLeft, changeGrid, x, y, sprite, app , spriteSize);
+		fieldDraw(sgrid, grid, eventMouseLeft, changeGrid, x, y, sprite, app , spriteSize);
 
 	
 
