@@ -52,14 +52,14 @@ void placeBombs(Matrixt2d& matrix) {
 	for (int i = 1u; i <= (rows - 2); i++)
 		for (int j = 1u; j <= (cols - 2); j++) {
 			if (matrix[i][j] == HOUSE_LAMP) continue;
-			if ((rand() % 11 == 0) ) matrix[i][j] = HOUSE_BOMB;
+			if ((rand() % 7 == 0) ) matrix[i][j] = HOUSE_BOMB;
 			else matrix[i][j] = HOUSE_EMPTY;
 		}
 }
 
 
 
-void placeBombELampCounters(Matrixt2d& matrix) {
+void placeBombCounters(Matrixt2d& matrix) {
 	int rows = matrix.size();
 	int cols = matrix[0].size();
 
@@ -70,7 +70,7 @@ void placeBombELampCounters(Matrixt2d& matrix) {
 			for (int l = -1; l <= 1; l++) {
 				int loopRow = row + k;
 				int loopCol = col + l;
-				if (matrix[loopRow][loopCol] == HOUSE_BOMB || (matrix[loopRow][loopCol] == HOUSE_LAMP)) n++;
+				if (matrix[loopRow][loopCol] == HOUSE_BOMB) n++;
 			}
 		}
 
@@ -99,7 +99,7 @@ void lampAction(Matrixt2d& matrix, Matrixt2d& sMatrix ,int x ,int  y) {
 			for (int l = -10; l <= 10; l++) {
 				int xToAnalyze = x + k;
 				int yToAnalyze = y + l;
-				if (!availableSpace((xToAnalyze), (yToAnalyze), rows, cols)) continue;
+				if (!availableSpace((xToAnalyze), (yToAnalyze), rows, cols) || sMatrix[xToAnalyze][yToAnalyze] == HOUSE_COVERED_BOMB) continue;
 				else if (matrix[xToAnalyze][yToAnalyze] == HOUSE_BOMB) {
 					sMatrix[xToAnalyze][yToAnalyze] = HOUSE_COVERED_BOMB;
 					n++;
@@ -126,10 +126,9 @@ void eventButtonpressed(Matrixt2d& sMatrix, Matrixt2d& matrix, Event event, int 
 				if (matrix[x][y] == HOUSE_BOMB) gameOver(sMatrix, matrix, rows, cols);
 				else if (sMatrix[x][y] != matrix[x][y]) {
 					if (matrix[x][y] == HOUSE_LAMP) lampAction(matrix, sMatrix, x, y);
-					else {
 						std::vector<std::vector<int>> reveal(rows, std::vector<int>(cols));
 						analyzeEmptySpaces(reveal, sMatrix, matrix, x, y, rows, cols);
-					}
+					
 				}
 
 				
@@ -151,24 +150,63 @@ bool availableSpace(int x, int y, int rows, int cols) {
 }
 
 
+
+void loopEdges(Matrixt2d& reveal, Matrixt2d& sMatrix, Matrixt2d& matrix, int x, int y , int rows ,  int cols ) {
+	for (int k = -1; k <= 1; k++) {
+		for (int l = -1; l <= 1; l++) {
+			int loopX = x + k;
+			int loopY = y + l;
+			analyzeEmptySpaces(reveal, sMatrix, matrix, loopX, loopY, rows, cols);
+			l++;
+		}
+		k++;
+	}
+
+}
+
+
 void analyzeEmptySpaces(Matrixt2d& reveal, Matrixt2d& sMatrix, Matrixt2d& matrix, int x, int y, int rows, int  cols) {
-	if (!(availableSpace(x, y, rows, cols)) || (reveal[x][y] == 1) || matrix[x][y] == HOUSE_BOMB || matrix[x][y] == HOUSE_LAMP) {
+	if (!(availableSpace(x, y, rows, cols)) || (reveal[x][y] == 1) || matrix[x][y] == HOUSE_BOMB) {
 		return;
 	}
 
+
 	if (matrix[x][y] > HOUSE_EMPTY && matrix[x][y] < HOUSE_BOMB) {
 		sMatrix[x][y] = matrix[x][y];
+		reveal[x][y] = 1;
+
+		//Analisa as casas laterais das com números , se a casa vizinha já tiver sido contada e for vazia , analiza as casas diagonais da mesma
+		for (int k = -1; k <= 1; k++) {
+			int loopX = x + k;
+			int loopY = y + k;
+
+			if (availableSpace(loopX, y, rows, cols) && (reveal[loopX][y] == 1) && (matrix[loopX][y] == HOUSE_EMPTY)) loopEdges(reveal, sMatrix, matrix, loopX, y, rows, cols);
+			if (availableSpace(x, loopY, rows, cols) && (reveal[x][loopY] == 1) && (matrix[x][loopY] == HOUSE_EMPTY)) loopEdges(reveal, sMatrix, matrix, x , loopY, rows, cols);
+
+			k++;
+		}
+	
 		return;
+	}
+
+
+
+	if ((matrix[x][y] == HOUSE_LAMP)) {
+		if (sMatrix[x][y] != HOUSE_LAMP) lampAction(matrix, sMatrix, x, y);
 	}
 
 	reveal[x][y] = 1;
 
 	if (matrix[x][y] != HOUSE_BOMB) {
 		sMatrix[x][y] = matrix[x][y];
+		
+		//Faz um Flood fill
 		analyzeEmptySpaces(reveal, sMatrix, matrix, x - 1, y, rows, cols);
 		analyzeEmptySpaces(reveal, sMatrix, matrix, x + 1, y, rows, cols);
 		analyzeEmptySpaces(reveal, sMatrix, matrix, x, y - 1, rows, cols);
 		analyzeEmptySpaces(reveal, sMatrix, matrix, x, y + 1, rows, cols);
+
+
 	}
 }
 

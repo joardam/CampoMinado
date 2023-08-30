@@ -11,7 +11,7 @@ using namespace sf;
 
 int startGame()
 {
-	srand(3u);
+	srand(11u/*static_cast<unsigned int>(time(0))*/);
 
 	int rows = 18;
 	int cols = 18;
@@ -38,7 +38,7 @@ int startGame()
 	placeBonusLamp(matrix);
 
 	placeBombs(matrix);
-	placeBombELampCounters(matrix);
+	placeBombCounters(matrix);
 
 
 
