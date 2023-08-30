@@ -1,17 +1,18 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <time.h>
-#include "Gamelogic.h"
+#include "GameFunctions.h"
+
 
 
 
 
 using namespace sf;
 
-int main()
+int startGame()
 {
-	srand(static_cast<unsigned int>(time(0)));
-	
+	srand(3u);
+
 	int rows = 18;
 	int cols = 18;
 	int spriteSize = 32;
@@ -19,26 +20,28 @@ int main()
 	unsigned int videoSizex = static_cast<unsigned int>(rows * spriteSize);
 	unsigned int videoSizey = static_cast<unsigned int>(cols * spriteSize);
 
-	sf::RenderWindow app(VideoMode(videoSizex, videoSizey), "Campo Minado" , Style::Close);
+	sf::RenderWindow app(VideoMode(videoSizex, videoSizey), "Campo Minado", Style::Close);
 
 
 	//Cria matrizes
-	std::vector<std::vector<int>> grid(rows, std::vector<int>(cols));
-	std::vector<std::vector<int>> sgrid(rows, std::vector<int>(cols));
-	
+	std::vector<std::vector<int>> matrix(rows, std::vector<int>(cols));
+	std::vector<std::vector<int>> sMatrix(rows, std::vector<int>(cols));
+
 
 	Texture texture;
-	texture.loadFromFile("images/tiles.jpg");
+	texture.loadFromFile("images/newsprites.jpg");
 	Sprite sprite(texture);
-	
-	fillMatrix(sgrid, rows - 2);
-	fillMatrix(grid, cols -2);
 
-	placeBombs(grid);
+	fillMatrix(sMatrix, rows - 2 ,cols -2);
+	fillMatrix(matrix, rows -2 , cols - 2);
 
-	placeBombCounters(grid);
+	placeBonusLamp(matrix);
 
-	
+	placeBombs(matrix);
+	placeBombELampCounters(matrix);
+
+
+
 
 	while (app.isOpen())
 	{
@@ -49,22 +52,21 @@ int main()
 		Event event;
 		bool eventMouseLeft = false;
 		bool changeGrid = false;
-		
+
 		while (app.pollEvent(event))
 		{
 			if (event.type == Event::Closed)
 				app.close();
 
-			eventButtonpressed(sgrid, grid, event, eventMouseLeft, changeGrid , x, y);
+			eventButtonpressed(sMatrix, matrix, event, x, y);
 		}
-		
-		app.clear(Color::White);
-		fieldDraw(sgrid, grid, sprite, app , spriteSize);
 
-	
+		app.clear(Color::White);
+		fieldDraw(sMatrix, matrix, sprite, app, spriteSize);
+
+
 
 		app.display();
 	}
-
+	return 0;
 }
-
