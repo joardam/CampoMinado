@@ -45,17 +45,25 @@ void placeBonusLamp(Matrixt2d& matrix) {
 }
 
 
-void placeBombs(Matrixt2d& matrix) {
-	int rows = matrix.size();
-	int cols = matrix[0].size();
+void placeBombs(Matrixt2d& matrix , int difficulty) {
+	int apparentMatrixSize = matrix.size() - 2;
+	int bombsQuantity = difficulty;
 
-	for (int i = 1u; i <= (rows - 2); i++)
-		for (int j = 1u; j <= (cols - 2); j++) {
-			if (matrix[i][j] == HOUSE_LAMP) continue;
-			if ((rand() % 7 == 0) ) matrix[i][j] = HOUSE_BOMB;
-			else matrix[i][j] = HOUSE_EMPTY;
+	for (int i = 0u; i < (bombsQuantity); i++) {
+
+		int bombX = randIntBetween(1, apparentMatrixSize);
+		int bombY = randIntBetween(1, apparentMatrixSize);
+
+		if ((matrix[bombX][bombY] == HOUSE_BOMB) || matrix[bombX][bombY] == HOUSE_LAMP) {
+			i--;
+			continue;
 		}
+		else matrix[bombX][bombY] = HOUSE_BOMB;
+
+	}
 }
+	
+
 
 
 
@@ -166,6 +174,7 @@ void loopEdges(Matrixt2d& reveal, Matrixt2d& sMatrix, Matrixt2d& matrix, int x, 
 
 
 void analyzeEmptySpaces(Matrixt2d& reveal, Matrixt2d& sMatrix, Matrixt2d& matrix, int x, int y, int rows, int  cols) {
+	
 	if (!(availableSpace(x, y, rows, cols)) || (reveal[x][y] == 1) || matrix[x][y] == HOUSE_BOMB) {
 		return;
 	}

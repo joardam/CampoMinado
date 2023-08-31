@@ -9,12 +9,12 @@
 
 using namespace sf;
 
-int startGame()
+int startGame(int difficulty , bool lamp, int matrixsize)
 {
-	srand(11u/*static_cast<unsigned int>(time(0))*/);
+	srand(static_cast<unsigned int>(time(0)));
 
-	int rows = 18;
-	int cols = 18;
+	int rows = matrixsize;
+	int cols = matrixsize;
 	int spriteSize = 32;
 
 	unsigned int videoSizex = static_cast<unsigned int>(rows * spriteSize);
@@ -34,10 +34,11 @@ int startGame()
 
 	fillMatrix(sMatrix, rows - 2 ,cols -2);
 	fillMatrix(matrix, rows -2 , cols - 2);
+	
+	if(lamp == true) placeBonusLamp(matrix); 
+	
 
-	placeBonusLamp(matrix);
-
-	placeBombs(matrix);
+	placeBombs(matrix , difficulty);
 	placeBombCounters(matrix);
 
 
