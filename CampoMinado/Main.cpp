@@ -3,6 +3,8 @@
 #include <time.h>
 #include "GameFunctions.h"
 #include <iostream>
+#include <cstdlib>
+#include <thread>
 
 
 int main() {
@@ -13,7 +15,9 @@ int main() {
     int inGameMatrix = matrixSize + 2;
     float difficulty = float(matrixArea*0.15f);
 
+
     while (true) {
+        system("cls");
         std::cout << "Menu:" << std::endl;
         std::cout << "1. Jogar" << std::endl;
         std::cout << "2. Personalizar" << std::endl;
@@ -44,7 +48,7 @@ int main() {
             lamp = (lampChoice == 1);
             
 
-            std::cout << "Escolha o tamanho da matriz (1-30): ";
+            std::cout << "Escolha o tamanho da matriz (10-30): ";
             while (!(std::cin >> matrixSize) || matrixSize < 9 || matrixSize > 30) {
                 std::cout << "Tamanho inválido. Escolha novamente: ";
                 std::cin.clear();
@@ -80,6 +84,7 @@ int main() {
             
 
             std::cout << "Configurações personalizadas salvas." << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
             break;
         case 3:
             std::cout << "Saindo do programa..." << std::endl;
